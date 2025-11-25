@@ -1,0 +1,5 @@
+{
+  "name": "EmbedLink - 嵌入式导航",
+  "description": "一个专为嵌入式开发者设计的智能书签管理器。利用 Gemini AI 自动分类和摘要，帮助你整理 datasheets、博客和工具网站。",
+  "requestFramePermissions": []
+}
