@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Note } from '../types';
-import { Save, X, Hash, PenLine } from 'lucide-react';
+import { Save, X, Hash, PenLine, Eye, FileText } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface NoteEditorProps {
   initialData?: Note | null;
@@ -12,6 +14,7 @@ const NoteEditor: React.FC<NoteEditorProps> = ({ initialData, onSave, onCancel }
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [tags, setTags] = useState('');
+  const [mode, setMode] = useState<'write' | 'preview'>('write');
 
   useEffect(() => {
     if (initialData) {
@@ -31,13 +34,61 @@ const NoteEditor: React.FC<NoteEditorProps> = ({ initialData, onSave, onCancel }
     onSave({ title, content, tags: processedTags });
   };
 
+  // Custom styles for markdown elements to match the app theme
+  const markdownComponents = {
+    h1: ({node, ...props}: any) => <h1 className="text-2xl font-bold mt-4 mb-2 text-slate-800 dark:text-slate-100 border-b border-slate-200 dark:border-slate-700 pb-1" {...props} />,
+    h2: ({node, ...props}: any) => <h2 className="text-xl font-bold mt-3 mb-2 text-slate-800 dark:text-slate-100" {...props} />,
+    h3: ({node, ...props}: any) => <h3 className="text-lg font-semibold mt-3 mb-1 text-slate-800 dark:text-slate-100" {...props} />,
+    p: ({node, ...props}: any) => <p className="mb-3 leading-relaxed text-slate-700 dark:text-slate-300" {...props} />,
+    ul: ({node, ...props}: any) => <ul className="list-disc list-inside mb-3 ml-2 text-slate-700 dark:text-slate-300" {...props} />,
+    ol: ({node, ...props}: any) => <ol className="list-decimal list-inside mb-3 ml-2 text-slate-700 dark:text-slate-300" {...props} />,
+    li: ({node, ...props}: any) => <li className="mb-1" {...props} />,
+    blockquote: ({node, ...props}: any) => <blockquote className="border-l-4 border-indigo-400 pl-4 py-1 my-3 bg-slate-50 dark:bg-slate-800/50 italic text-slate-600 dark:text-slate-400 rounded-r" {...props} />,
+    code: ({node, inline, className, children, ...props}: any) => {
+      return inline ? (
+        <code className="bg-slate-100 dark:bg-slate-700 text-rose-500 dark:text-rose-400 px-1.5 py-0.5 rounded text-sm font-mono" {...props}>
+          {children}
+        </code>
+      ) : (
+        <div className="mockup-code bg-slate-900 text-slate-200 rounded-lg p-4 my-3 overflow-x-auto font-mono text-sm shadow-sm">
+          <code {...props}>{children}</code>
+        </div>
+      );
+    },
+    a: ({node, ...props}: any) => <a className="text-blue-500 hover:underline" target="_blank" rel="noopener noreferrer" {...props} />,
+    table: ({node, ...props}: any) => <div className="overflow-x-auto my-4"><table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700 border border-slate-200 dark:border-slate-700 rounded-lg" {...props} /></div>,
+    th: ({node, ...props}: any) => <th className="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider" {...props} />,
+    td: ({node, ...props}: any) => <td className="px-4 py-2 whitespace-nowrap text-sm text-slate-600 dark:text-slate-300 border-t border-slate-200 dark:border-slate-700" {...props} />,
+  };
+
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col h-[calc(100vh-140px)] animate-in fade-in slide-in-from-bottom-4 duration-300">
       <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/50 backdrop-blur-sm">
-        <h2 className="font-bold text-lg text-slate-800 dark:text-slate-100 flex items-center gap-2">
-          <PenLine size={20} className="text-indigo-500" />
-          {initialData ? '编辑笔记' : '撰写新笔记'}
-        </h2>
+        <div className="flex items-center gap-4">
+          <h2 className="font-bold text-lg text-slate-800 dark:text-slate-100 flex items-center gap-2">
+            <PenLine size={20} className="text-indigo-500" />
+            {initialData ? '编辑笔记' : '撰写新笔记'}
+          </h2>
+          
+          {/* View Mode Toggle */}
+          <div className="flex bg-slate-200 dark:bg-slate-700 rounded-lg p-1">
+            <button
+              type="button"
+              onClick={() => setMode('write')}
+              className={`px-3 py-1 rounded-md text-xs font-medium flex items-center gap-1.5 transition-all ${mode === 'write' ? 'bg-white dark:bg-slate-600 shadow text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}
+            >
+              <PenLine size={12} /> 编辑
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode('preview')}
+              className={`px-3 py-1 rounded-md text-xs font-medium flex items-center gap-1.5 transition-all ${mode === 'preview' ? 'bg-white dark:bg-slate-600 shadow text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}
+            >
+              <Eye size={12} /> 预览
+            </button>
+          </div>
+        </div>
+
         <button onClick={onCancel} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
           <X size={24} />
         </button>
@@ -67,14 +118,29 @@ const NoteEditor: React.FC<NoteEditorProps> = ({ initialData, onSave, onCancel }
           />
         </div>
 
-        <div className="flex-1 min-h-[300px] relative rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="在此处记录你的学习心得、调试日志或代码片段..."
-            className="absolute inset-0 w-full h-full p-4 bg-transparent border-none resize-none focus:ring-0 text-slate-700 dark:text-slate-300 font-mono text-sm leading-relaxed"
-            required
-          />
+        <div className="flex-1 min-h-[300px] relative rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 overflow-hidden">
+          {mode === 'write' ? (
+            <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="在此处记录你的学习心得、调试日志或代码片段... (支持 Markdown)"
+              className="absolute inset-0 w-full h-full p-4 bg-transparent border-none resize-none focus:ring-0 text-slate-700 dark:text-slate-300 font-mono text-sm leading-relaxed"
+              required
+            />
+          ) : (
+            <div className="absolute inset-0 w-full h-full p-6 overflow-y-auto custom-scrollbar bg-white dark:bg-slate-900">
+              {content ? (
+                <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+                  {content}
+                </ReactMarkdown>
+              ) : (
+                <div className="h-full flex items-center justify-center text-slate-400 flex-col gap-2">
+                  <FileText size={32} className="opacity-20" />
+                  <p className="text-sm">暂无内容预览</p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="mt-6 flex justify-end gap-3">

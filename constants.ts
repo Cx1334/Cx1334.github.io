@@ -1,4 +1,4 @@
-import { Bookmark, Category, Note, Quote } from './types';
+import { Bookmark, Category, Note, Quote, Project } from './types';
 
 export const INITIAL_BOOKMARKS: Bookmark[] = [
   {
@@ -64,6 +64,41 @@ export const INITIAL_NOTES: Note[] = [
     tags: ['Linux', 'DeviceTree', 'Driver'],
     createdAt: Date.now() - 172800000,
     updatedAt: Date.now() - 100000
+  }
+];
+
+export const INITIAL_PROJECTS: Project[] = [
+  {
+    id: 'p1',
+    name: '智能温湿度监控系统',
+    description: '基于 STM32F103 和 ESP8266 的物联网环境监控设备，通过 MQTT 上传数据。',
+    githubUrl: 'https://github.com/example/smart-temp-monitor',
+    status: 'development',
+    priority: 'high',
+    progress: 45,
+    startDate: Date.now() - 10000000,
+    tags: ['STM32', 'IoT', 'MQTT'],
+    tasks: [
+      { id: 't1', content: '完成 PCB 原理图设计', isCompleted: true },
+      { id: 't2', content: 'ESP8266 AT 指令驱动编写', isCompleted: true },
+      { id: 't3', content: 'DHT11 传感器数据读取', isCompleted: false },
+      { id: 't4', content: '搭建 MQTT 服务器', isCompleted: false }
+    ]
+  },
+  {
+    id: 'p2',
+    name: '个人博客 Hexo 主题',
+    description: '一个极简风格的 Hexo 博客主题，支持暗黑模式和代码高亮。',
+    githubUrl: 'https://github.com/example/hexo-theme-simple',
+    status: 'released',
+    priority: 'low',
+    progress: 100,
+    startDate: Date.now() - 50000000,
+    tags: ['Web', 'CSS', 'Hexo'],
+    tasks: [
+      { id: 't1', content: '基础布局搭建', isCompleted: true },
+      { id: 't2', content: '增加评论功能', isCompleted: true }
+    ]
   }
 ];
 

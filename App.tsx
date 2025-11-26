@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { Bookmark, Note, Category, User } from './types';
-import { INITIAL_BOOKMARKS, INITIAL_NOTES } from './constants';
+import { Bookmark, Note, Category, User, Project } from './types';
+import { INITIAL_BOOKMARKS, INITIAL_NOTES, INITIAL_PROJECTS } from './constants';
 import BookmarkCard from './components/BookmarkCard';
 import AddModal from './components/AddModal';
 import NoteEditor from './components/NoteEditor';
@@ -8,14 +8,16 @@ import NoteCard from './components/NoteCard';
 import QuoteWidget from './components/QuoteWidget';
 import AuthPage from './components/AuthPage';
 import MindMap from './components/MindMap';
+import ProjectManager from './components/ProjectManager';
+import DevTools from './components/DevTools';
 import { 
   Plus, Search, Layers, Command, Github, Cpu, Moon, Sun, 
   Menu, Book, PenTool, Library, Notebook as NotebookIcon,
   PanelLeftClose, PanelLeftOpen, Settings, Download, Upload, AlertCircle, ChevronRight,
-  LogOut, BrainCircuit, PanelLeft
+  LogOut, BrainCircuit, PanelLeft, FolderGit2, Wrench
 } from 'lucide-react';
 
-type ViewMode = 'bookmarks' | 'notes' | 'mindmap';
+type ViewMode = 'bookmarks' | 'notes' | 'mindmap' | 'projects' | 'tools';
 
 const App: React.FC = () => {
   // --- State: User & Auth ---
@@ -30,6 +32,11 @@ const App: React.FC = () => {
   const [notes, setNotes] = useState<Note[]>(() => {
     const saved = localStorage.getItem('embedlink-notes');
     return saved ? JSON.parse(saved) : INITIAL_NOTES;
+  });
+
+  const [projects, setProjects] = useState<Project[]>(() => {
+    const saved = localStorage.getItem('embedlink-projects');
+    return saved ? JSON.parse(saved) : INITIAL_PROJECTS;
   });
 
   // --- State: UI Control ---
@@ -61,7 +68,6 @@ const App: React.FC = () => {
 
   // --- Effects ---
   useEffect(() => {
-    // Check local session
     const savedUser = localStorage.getItem('embedlink-user');
     if (savedUser) {
       setUser(JSON.parse(savedUser));
@@ -75,6 +81,10 @@ const App: React.FC = () => {
   useEffect(() => {
     localStorage.setItem('embedlink-notes', JSON.stringify(notes));
   }, [notes]);
+
+  useEffect(() => {
+    localStorage.setItem('embedlink-projects', JSON.stringify(projects));
+  }, [projects]);
 
   useEffect(() => {
     if (darkMode) {
@@ -153,7 +163,7 @@ const App: React.FC = () => {
 
    // --- Import / Export ---
    const handleExport = () => {
-    const backupData = { bookmarks, notes, version: 2 };
+    const backupData = { bookmarks, notes, projects, version: 3 };
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData));
     const downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute("href", dataStr);
@@ -173,9 +183,10 @@ const App: React.FC = () => {
         if (confirm('导入将覆盖当前所有数据，确定继续吗？')) {
            if (Array.isArray(json)) {
               setBookmarks(json); 
-           } else if (json.bookmarks || json.notes) {
+           } else if (json.bookmarks || json.notes || json.projects) {
               if (json.bookmarks) setBookmarks(json.bookmarks);
               if (json.notes) setNotes(json.notes);
+              if (json.projects) setProjects(json.projects);
            }
            setIsSettingsOpen(false);
            alert('导入成功！');
@@ -230,6 +241,28 @@ const App: React.FC = () => {
     </button>
   );
 
+  const getPageTitle = () => {
+    switch(viewMode) {
+      case 'bookmarks': return '知识库';
+      case 'notes': return '笔记本';
+      case 'mindmap': return '思维图谱';
+      case 'projects': return '项目管理';
+      case 'tools': return '开发者工具';
+      default: return '';
+    }
+  };
+
+  const getPageSubtitle = () => {
+    switch(viewMode) {
+      case 'bookmarks': return selectedCategory === 'All' ? '仪表盘' : selectedCategory;
+      case 'notes': return '我的笔记';
+      case 'mindmap': return '知识网络';
+      case 'projects': return '进度追踪';
+      case 'tools': return '实用工具箱';
+      default: return '';
+    }
+  };
+
   // --- AUTH CHECK ---
   if (!user) {
     return <AuthPage onLogin={handleLogin} />;
@@ -266,9 +299,29 @@ const App: React.FC = () => {
 
         {/* Sidebar Navigation */}
         <nav className="flex-1 overflow-y-auto px-3 py-6 space-y-8 custom-scrollbar">
+          {/* Section: Project Management (NEW) */}
+          <div className="min-w-[15rem]">
+            <div className="px-3 mb-3 text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
+              <FolderGit2 size={12} /> 工程与项目
+            </div>
+            {renderSidebarItem(
+              viewMode === 'projects',
+              () => { setViewMode('projects'); setIsSidebarOpen(false); },
+              <FolderGit2 size={18} />,
+              "项目管理",
+              projects.length
+            )}
+            {renderSidebarItem(
+              viewMode === 'tools',
+              () => { setViewMode('tools'); setIsSidebarOpen(false); },
+              <Wrench size={18} />,
+              "工具箱",
+              undefined
+            )}
+          </div>
+
           {/* Section: Resource Library */}
           <div className="min-w-[15rem]"> 
-            {/* Added min-w to prevent text wrapping weirdly during transition */}
             <div className="px-3 mb-3 text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
               <Library size={12} /> 知识库 Resource
             </div>
@@ -323,7 +376,7 @@ const App: React.FC = () => {
         
         {/* Settings & User */}
         <div className="border-t border-slate-800/50 bg-slate-900/50 min-w-[15rem]">
-           {viewMode !== 'mindmap' && <QuoteWidget />}
+           {viewMode !== 'mindmap' && viewMode !== 'projects' && viewMode !== 'tools' && <QuoteWidget />}
            
            <div className="p-3 space-y-2">
              <button
@@ -360,7 +413,7 @@ const App: React.FC = () => {
                  <Menu size={24} />
                </button>
 
-               {/* Desktop Sidebar Toggle - ONLY VISIBLE ON DESKTOP */}
+               {/* Desktop Sidebar Toggle */}
                <button 
                  onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
                  className="hidden md:flex p-2 -ml-2 text-slate-500 hover:text-brand-600 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
@@ -372,11 +425,11 @@ const App: React.FC = () => {
                {/* Breadcrumbs / Title */}
                <div className="flex items-center gap-2 text-sm text-slate-500 ml-1">
                   <span className="font-medium text-slate-900 dark:text-slate-200 hidden sm:inline">
-                     {viewMode === 'bookmarks' ? '知识库' : viewMode === 'notes' ? '笔记本' : '笔记本'}
+                     {getPageTitle()}
                   </span>
                   <ChevronRight size={14} className="hidden sm:inline" />
                   <span className="text-brand-600 dark:text-brand-400 font-bold text-lg sm:text-sm sm:font-medium">
-                     {viewMode === 'bookmarks' ? (selectedCategory === 'All' ? '仪表盘' : selectedCategory) : viewMode === 'notes' ? '我的笔记' : '思维图谱'}
+                     {getPageSubtitle()}
                   </span>
                </div>
              </div>
@@ -395,7 +448,8 @@ const App: React.FC = () => {
              </div>
           </div>
 
-          {viewMode !== 'mindmap' && (
+          {/* Search/Filter Bar (Not needed for MindMap, Project Detail View, or Tools) */}
+          {viewMode !== 'mindmap' && viewMode !== 'projects' && viewMode !== 'tools' && (
             <div className="flex flex-col md:flex-row items-center gap-3">
                <div className="relative flex-1 w-full group">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-500 transition-colors" size={18} />
@@ -430,10 +484,10 @@ const App: React.FC = () => {
         </header>
 
         {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar relative">
            {/* Settings Dropdown Panel */}
            {isSettingsOpen && (
-              <div className="absolute top-20 right-4 md:left-8 md:top-auto md:bottom-8 z-50 w-72 bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 p-5 animate-in fade-in zoom-in duration-200">
+              <div className="absolute top-4 right-4 z-50 w-72 bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 p-5 animate-in fade-in zoom-in duration-200">
                 <h3 className="font-bold text-slate-800 dark:text-white mb-4 text-sm flex items-center gap-2">
                   <Settings size={16} /> 数据备份与恢复
                 </h3>
@@ -520,6 +574,21 @@ const App: React.FC = () => {
                <div className="h-full pb-20">
                   <MindMap notes={notes} onNoteClick={handleEditNote} />
                </div>
+            )}
+
+            {/* --- VIEW: PROJECTS (NEW) --- */}
+            {viewMode === 'projects' && (
+              <div className="h-full -m-4 md:-m-8"> 
+                 {/* Negative margin to counteract the padding on main container, as ProjectManager handles its own layout */}
+                 <ProjectManager projects={projects} onUpdateProjects={setProjects} />
+              </div>
+            )}
+
+            {/* --- VIEW: TOOLS (NEW) --- */}
+            {viewMode === 'tools' && (
+              <div className="h-full -m-4 md:-m-8">
+                 <DevTools />
+              </div>
             )}
         </div>
       </main>

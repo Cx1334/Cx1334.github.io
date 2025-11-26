@@ -29,6 +29,29 @@ export interface User {
   joinDate: number;
 }
 
+// --- Project Management Types ---
+export type ProjectStatus = 'planning' | 'development' | 'testing' | 'released' | 'archived';
+export type ProjectPriority = 'high' | 'medium' | 'low'; 
+
+export interface Task {
+  id: string;
+  content: string;
+  isCompleted: boolean;
+}
+
+export interface Project {
+  id: string;
+  name: string;
+  description: string;
+  githubUrl?: string; 
+  status: ProjectStatus;
+  priority: ProjectPriority; 
+  progress: number; // 0 - 100
+  tasks: Task[];
+  startDate: number;
+  tags: string[]; 
+}
+
 export enum Category {
   EMBEDDED = '嵌入式/MCU',
   LINUX = 'Linux/驱动',
