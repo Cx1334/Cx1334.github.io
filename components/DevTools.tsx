@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Calculator, Timer, Hash, Binary, Play, Pause, RotateCcw, Laptop2, Type, Code, History, CheckCircle2, XCircle, Trash2, Quote } from 'lucide-react';
+import { Calculator, Timer, Hash, Binary, Play, Pause, RotateCcw, Laptop, Type, Code, History, CheckCircle2, XCircle, Trash2, Quote } from 'lucide-react';
 import { PomodoroSession } from '../types';
 import { QUOTES } from '../constants';
 
@@ -170,7 +170,7 @@ const DevTools: React.FC = () => {
     <div className="p-4 md:p-8 h-full overflow-y-auto custom-scrollbar space-y-8">
       <div className="animate-in slide-in-from-top-4 duration-500">
         <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
-          <Laptop2 className="text-brand-500" /> 开发者工具箱
+          <Laptop className="text-brand-500" /> 开发者工具箱
         </h2>
         <p className="text-slate-500 dark:text-slate-400">嵌入式开发必备辅助与效率工具</p>
       </div>
