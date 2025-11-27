@@ -22,15 +22,30 @@ const CategoryIcon = ({ category }: { category: Category }) => {
 
 const BookmarkCard: React.FC<BookmarkCardProps> = ({ bookmark, onDelete, onEdit }) => {
   const [copied, setCopied] = useState(false);
-  
-  // Use Google's favicon service
   const faviconUrl = `https://www.google.com/s2/favicons?domain=${bookmark.url}&sz=32`;
 
   const handleCopy = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     navigator.clipboard.writeText(bookmark.url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onDelete(bookmark.id);
+  };
+
+  const handleEdit = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onEdit(bookmark);
+  };
+
+  const handleLinkClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
   };
 
   return (
@@ -42,12 +57,12 @@ const BookmarkCard: React.FC<BookmarkCardProps> = ({ bookmark, onDelete, onEdit 
               src={faviconUrl} 
               alt="" 
               className="w-8 h-8 rounded-lg bg-slate-50 dark:bg-slate-700 p-0.5 object-cover shrink-0" 
-              onError={(e) => { (e.target as HTMLImageElement).src = 'https://via.placeholder.com/32?text=?' }}
+              onError={(e) => { (e.target as HTMLImageElement).src = 'https://via.placeholder.com/32?text=?' }} 
             />
             <div className="flex flex-col min-w-0">
                <h3 className="font-semibold text-slate-800 dark:text-slate-100 truncate text-lg group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors" title={bookmark.title}>
-                {bookmark.title}
-              </h3>
+                 {bookmark.title}
+               </h3>
               <div className="flex items-center space-x-1 text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 <CategoryIcon category={bookmark.category} />
                 <span>{bookmark.category}</span>
@@ -55,11 +70,9 @@ const BookmarkCard: React.FC<BookmarkCardProps> = ({ bookmark, onDelete, onEdit 
             </div>
           </div>
         </div>
-        
         <p className="text-slate-600 dark:text-slate-300 text-sm line-clamp-3 leading-relaxed mb-4">
           {bookmark.description}
         </p>
-
         {bookmark.tags && bookmark.tags.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mt-auto mb-2">
             {bookmark.tags.map(tag => (
@@ -72,39 +85,40 @@ const BookmarkCard: React.FC<BookmarkCardProps> = ({ bookmark, onDelete, onEdit 
       </div>
 
       <div className="px-5 py-3 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center">
-         <span className="text-xs text-slate-400 font-mono">
-           {new Date(bookmark.createdAt).toLocaleDateString()}
-         </span>
+         <span className="text-xs text-slate-400 font-mono">{new Date(bookmark.createdAt).toLocaleDateString()}</span>
          
-         <div className="flex space-x-1">
+         <div className="flex items-center gap-1">
             <button 
-              onClick={handleCopy}
-              className="p-1.5 text-slate-400 hover:text-brand-600 hover:bg-white dark:hover:bg-slate-700 rounded-md transition-colors"
+              onClick={handleCopy} 
+              className="p-1.5 text-slate-400 hover:text-brand-600 hover:bg-white dark:hover:bg-slate-700 rounded-md transition-colors" 
               title="复制链接"
             >
               {copied ? <Check size={16} className="text-green-500"/> : <Copy size={16} />}
             </button>
             <button 
-              onClick={() => onEdit(bookmark)}
-              className="p-1.5 text-slate-400 hover:text-blue-500 hover:bg-white dark:hover:bg-slate-700 rounded-md transition-colors"
+              onClick={handleEdit} 
+              className="p-1.5 text-slate-400 hover:text-blue-500 hover:bg-white dark:hover:bg-slate-700 rounded-md transition-colors" 
               title="编辑"
             >
               <Edit2 size={16} />
             </button>
             <button 
-              onClick={() => onDelete(bookmark.id)}
-              className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-white dark:hover:bg-slate-700 rounded-md transition-colors"
+              onClick={handleDelete} 
+              className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-white dark:hover:bg-slate-700 rounded-md transition-colors" 
               title="删除"
             >
               <Trash2 size={16} />
             </button>
-            <div className="w-px h-4 bg-slate-300 dark:bg-slate-700 mx-1 self-center"></div>
+            
+            <div className="w-px h-4 bg-slate-300 dark:bg-slate-700 mx-1"></div>
+            
             <a 
               href={bookmark.url} 
               target="_blank" 
-              rel="noopener noreferrer"
-              className="p-1.5 text-brand-500 hover:text-brand-700 hover:bg-white dark:hover:bg-slate-700 rounded-md transition-colors"
-              title="访问"
+              rel="noopener noreferrer" 
+              className="p-1.5 text-brand-500 hover:text-brand-700 hover:bg-white dark:hover:bg-slate-700 rounded-md transition-colors" 
+              title="访问" 
+              onClick={handleLinkClick}
             >
               <ExternalLink size={16} />
             </a>

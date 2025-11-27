@@ -12,8 +12,6 @@ interface NoteCardProps {
 }
 
 const NoteCard: React.FC<NoteCardProps> = ({ note, onEdit, onDelete, onClick }) => {
-  
-  // Simplified markdown styles for preview card
   const miniMarkdownComponents = {
     h1: ({...props}: any) => <strong className="block text-sm font-bold mb-1" {...props} />,
     h2: ({...props}: any) => <strong className="block text-sm font-bold mb-1" {...props} />,
@@ -23,17 +21,27 @@ const NoteCard: React.FC<NoteCardProps> = ({ note, onEdit, onDelete, onClick }) 
     ol: ({...props}: any) => <ol className="list-decimal list-inside mb-1 ml-1" {...props} />,
     li: ({...props}: any) => <li className="truncate" {...props} />,
     blockquote: ({...props}: any) => <span className="text-slate-400 italic border-l-2 border-slate-300 pl-1 mr-1" {...props} />,
-    code: ({inline, ...props}: any) => inline 
-      ? <code className="bg-slate-100 dark:bg-slate-700 px-1 rounded text-xs font-mono text-rose-500" {...props} /> 
-      : <div className="text-xs bg-slate-900 text-slate-400 p-1 rounded mb-1 font-mono truncate">code block</div>,
+    code: ({inline, ...props}: any) => inline ? <code className="bg-slate-100 dark:bg-slate-700 px-1 rounded text-xs font-mono text-rose-500" {...props} /> : <div className="text-xs bg-slate-900 text-slate-400 p-1 rounded mb-1 font-mono truncate">code block</div>,
     a: ({...props}: any) => <span className="text-indigo-500 underline decoration-dashed" {...props} />,
     img: () => <span className="text-xs text-slate-400">[图片]</span>,
-    hr: () => null, // Hide horizontal rules in preview
+    hr: () => null,
+  };
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onDelete(note.id);
+  };
+
+  const handleEdit = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onEdit(note);
   };
 
   return (
     <div 
-      onClick={() => onClick(note)}
+      onClick={() => onClick(note)} 
       className="group relative bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-md hover:border-indigo-300 dark:hover:border-indigo-700 transition-all duration-300 flex flex-col overflow-hidden cursor-pointer h-[280px]"
     >
       <div className="p-5 flex-1 flex flex-col overflow-hidden relative">
@@ -51,8 +59,6 @@ const NoteCard: React.FC<NoteCardProps> = ({ note, onEdit, onDelete, onClick }) 
           <ReactMarkdown remarkPlugins={[remarkGfm]} components={miniMarkdownComponents}>
             {note.content}
           </ReactMarkdown>
-          
-          {/* Gradient Fade for text overflow */}
           <div className="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-white dark:from-slate-800 to-transparent pointer-events-none"></div>
         </div>
 
@@ -64,9 +70,6 @@ const NoteCard: React.FC<NoteCardProps> = ({ note, onEdit, onDelete, onClick }) 
                 {tag}
               </span>
             ))}
-            {note.tags.length > 3 && (
-               <span className="text-xs text-slate-400 self-center">+{note.tags.length - 3}</span>
-            )}
           </div>
         )}
       </div>
@@ -77,16 +80,17 @@ const NoteCard: React.FC<NoteCardProps> = ({ note, onEdit, onDelete, onClick }) 
           {new Date(note.updatedAt).toLocaleDateString()}
         </div>
         
-        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
+        {/* Buttons are now always visible (removed opacity-0 group-hover:opacity-100) for better UX */}
+        <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
            <button 
-             onClick={() => onEdit(note)}
+             onClick={handleEdit}
              className="p-1.5 hover:bg-white dark:hover:bg-slate-700 text-slate-400 hover:text-indigo-500 rounded-md transition-colors"
              title="编辑"
            >
              <Edit2 size={14} />
            </button>
            <button 
-             onClick={() => onDelete(note.id)}
+             onClick={handleDelete}
              className="p-1.5 hover:bg-white dark:hover:bg-slate-700 text-slate-400 hover:text-red-500 rounded-md transition-colors"
              title="删除"
            >

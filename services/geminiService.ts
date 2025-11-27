@@ -1,12 +1,15 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Category, AIAnalysisResult } from "../types";
 
-export const analyzeUrlWithGemini = async (input: string): Promise<AIAnalysisResult> => {
+const getAiModel = () => {
   if (!process.env.API_KEY) {
     throw new Error("API Key is missing");
   }
+  return new GoogleGenAI({ apiKey: process.env.API_KEY });
+};
 
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+export const analyzeUrlWithGemini = async (input: string): Promise<AIAnalysisResult> => {
+  const ai = getAiModel();
 
   const prompt = `
     I have a website link or name: "${input}".
@@ -78,5 +81,45 @@ export const analyzeUrlWithGemini = async (input: string): Promise<AIAnalysisRes
       category: Category.OTHER,
       tags: []
     };
+  }
+};
+
+// NEW: Function to analyze files/materials
+export const analyzeMaterialWithGemini = async (fileName: string, context: string) => {
+  const ai = getAiModel();
+
+  const prompt = `
+    I am an embedded developer storing a file named "${fileName}". 
+    Context/Notes provided: "${context}".
+    
+    Please analyze this and return a JSON object with:
+    1. "description": A professional summary in Chinese (max 80 chars).
+    2. "tags": Array of 3-5 technical tags (e.g. "Datasheet", "I2C", "Schematic").
+    3. "type": Suggest one file type from ['pdf', 'doc', 'zip', 'code', 'image', 'other'].
+  `;
+
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            description: { type: Type.STRING },
+            type: { type: Type.STRING, enum: ['pdf', 'doc', 'zip', 'code', 'image', 'other'] },
+            tags: {
+              type: Type.ARRAY,
+              items: { type: Type.STRING }
+            },
+          }
+        }
+      }
+    });
+    return JSON.parse(response.text || '{}');
+  } catch (error) {
+    console.error("Gemini material analysis failed", error);
+    return null;
   }
 };

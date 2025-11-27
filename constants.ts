@@ -1,4 +1,4 @@
-import { Bookmark, Category, Note, Quote, Project } from './types';
+import { Bookmark, Category, Note, Quote, Project, CodeSnippet, Material, DailyPlan } from './types';
 
 export const INITIAL_BOOKMARKS: Bookmark[] = [
   {
@@ -28,24 +28,6 @@ export const INITIAL_BOOKMARKS: Bookmark[] = [
     tags: ['Component', 'Distributor', 'Datasheet'],
     createdAt: Date.now() - 200000,
   },
-  {
-    id: '4',
-    title: 'FreeRTOS',
-    url: 'https://www.freertos.org',
-    description: '市场领先的微控制器实时操作系统 (RTOS) 开源内核。',
-    category: Category.EMBEDDED,
-    tags: ['RTOS', 'Scheduler', 'Middleware'],
-    createdAt: Date.now() - 300000,
-  },
-  {
-    id: '5',
-    title: 'Altium Designer',
-    url: 'https://www.altium.com',
-    description: '专业的 PCB 设计软件资源和文档。',
-    category: Category.TOOLS,
-    tags: ['PCB', 'EDA', 'Design'],
-    createdAt: Date.now() - 400000,
-  }
 ];
 
 export const INITIAL_NOTES: Note[] = [
@@ -57,14 +39,6 @@ export const INITIAL_NOTES: Note[] = [
     createdAt: Date.now() - 86400000,
     updatedAt: Date.now() - 86400000
   },
-  {
-    id: 'n2',
-    title: 'Linux 设备树 (Device Tree) 备忘',
-    content: '设备树是描述硬件的数据结构。\n\n常用命令：\n- 编译：dtc -I dts -O dtb -o my.dtb my.dts\n- 反编译：dtc -I dtb -O dts -o dump.dts my.dtb\n\n注意：compatible 属性必须与驱动中的 .of_match_table 匹配。',
-    tags: ['Linux', 'DeviceTree', 'Driver'],
-    createdAt: Date.now() - 172800000,
-    updatedAt: Date.now() - 100000
-  }
 ];
 
 export const INITIAL_PROJECTS: Project[] = [
@@ -85,20 +59,66 @@ export const INITIAL_PROJECTS: Project[] = [
       { id: 't4', content: '搭建 MQTT 服务器', isCompleted: false }
     ]
   },
+];
+
+export const INITIAL_SNIPPETS: CodeSnippet[] = [
   {
-    id: 'p2',
-    name: '个人博客 Hexo 主题',
-    description: '一个极简风格的 Hexo 博客主题，支持暗黑模式和代码高亮。',
-    githubUrl: 'https://github.com/example/hexo-theme-simple',
-    status: 'released',
-    priority: 'low',
-    progress: 100,
-    startDate: Date.now() - 50000000,
-    tags: ['Web', 'CSS', 'Hexo'],
-    tasks: [
-      { id: 't1', content: '基础布局搭建', isCompleted: true },
-      { id: 't2', content: '增加评论功能', isCompleted: true }
-    ]
+    id: 's1',
+    title: 'STM32 HAL UART 重定向 printf',
+    language: 'c',
+    description: '在 Keil/IAR 中使用 printf 输出到串口',
+    tags: ['STM32', 'UART', 'Debug'],
+    platform: 'STM32',
+    code: `#include "stdio.h"
+
+// 重定向 fputc 函数
+int fputc(int ch, FILE *f) {
+    HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, 0xFFFF);
+    return ch;
+}`,
+    createdAt: Date.now()
+  },
+];
+
+export const INITIAL_MATERIALS: Material[] = [
+  {
+    id: 'm1',
+    name: 'STM32F103x8_Datasheet.pdf',
+    type: 'pdf',
+    size: '2.4 MB',
+    description: 'STM32F103x8 官方数据手册，包含电气特性和引脚定义。',
+    tags: ['Datasheet', 'STM32', 'Ref'],
+    createdAt: Date.now() - 2000000,
+    link: 'https://www.st.com/resource/en/datasheet/stm32f103c8.pdf'
+  },
+  {
+    id: 'm2',
+    name: 'Motor_Control_Source',
+    type: 'git',
+    size: '-',
+    description: '电机控制算法源码 Git 仓库。',
+    tags: ['Motor', 'Git', 'Source'],
+    createdAt: Date.now() - 8000000,
+    link: 'https://github.com/vedderb/bldc'
+  }
+];
+
+// NEW: Updated Daily Plans Structure
+export const INITIAL_PLANS: DailyPlan[] = [
+  {
+    date: new Date().toISOString().split('T')[0],
+    schedule: [
+      { id: 's1', title: '晨会 & 邮件处理', startTime: '09:00', endTime: '09:30', type: 'meeting', completed: true },
+      { id: 's2', title: 'FreeRTOS 内核阅读', startTime: '09:30', endTime: '11:30', type: 'deep_work', completed: true },
+      { id: 's3', title: '午休', startTime: '12:00', endTime: '13:30', type: 'break', completed: true },
+      { id: 's4', title: 'SPI 驱动调试', startTime: '14:00', endTime: '16:00', type: 'task', completed: false }
+    ],
+    todos: [
+      { id: 't1', text: '整理项目文件结构', completed: false },
+      { id: 't2', text: '回复客户关于 I2C 的问题', completed: false }
+    ],
+    summary: '上午效率很高，深入理解了任务调度机制。下午调试 SPI 遇到时序问题，怀疑是分频系数不对，明天继续排查。',
+    mood: 'neutral'
   }
 ];
 
