@@ -84,10 +84,16 @@ export interface ScheduleBlock {
   completed: boolean;
 }
 
+export interface TodoItem {
+  id: string;
+  text: string;
+  completed: boolean;
+}
+
 export interface DailyPlan {
   date: string; // YYYY-MM-DD
   schedule: ScheduleBlock[];
-  todos: { id: string; text: string; completed: boolean }[]; 
+  todos: TodoItem[]; 
   summary: string;
   mood?: 'happy' | 'neutral' | 'stress' | 'tired';
 }

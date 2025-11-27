@@ -8,9 +8,6 @@ import {
 } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
 
-// ... (Code remains largely similar to the provided upgrade plan, ensuring all imports and logic match the new requirements)
-// I will output the full ProjectManager content to ensure no partial updates break it.
-
 interface ProjectManagerProps {
   projects: Project[];
   onUpdateProjects: (projects: Project[]) => void;
@@ -211,7 +208,7 @@ const ProjectManager: React.FC<ProjectManagerProps> = ({ projects, onUpdateProje
                       <div className={`w-2 h-2 rounded-full ${p.progress === 100 ? 'bg-green-500' : 'bg-brand-500'}`} />
                       <div>
                         <div className="font-medium text-slate-800 dark:text-slate-200 flex items-center gap-2">{p.name}{p.priority === 'high' && <Flag size={12} className="text-red-500 fill-current" />}</div>
-                        <div className="text-xs text-slate-500 flex gap-2"><span>{new Date(p.startDate).toLocaleDateString()}</span>{p.estimatedEndDate && <span className="text-orange-400">-> {new Date(p.estimatedEndDate).toLocaleDateString()}</span>}</div>
+                        <div className="text-xs text-slate-500 flex gap-2"><span>{new Date(p.startDate).toLocaleDateString()}</span>{p.estimatedEndDate && <span className="text-orange-400">&rarr; {new Date(p.estimatedEndDate).toLocaleDateString()}</span>}</div>
                       </div>
                     </div>
                     <div className="flex items-center gap-4">
