@@ -5,22 +5,38 @@ const snippets = snippetsData.snippets ?? [];
 </script>
 
 <template>
-  <div v-if="snippets.length" class="snippets">
-    <div v-for="snippet in snippets" :key="snippet.id" class="snippet card">
-      <div class="sn-head">
-        <h3>{{ snippet.title }}</h3>
-        <span class="lang">{{ snippet.language }}</span>
-      </div>
-      <p v-if="snippet.description" class="sn-desc">{{ snippet.description }}</p>
-      <pre><code>{{ snippet.code }}</code></pre>
-      <div v-if="snippet.tags?.length" class="sn-tags">
-        <span v-for="tag in snippet.tags" :key="tag" class="sn-tag">{{ tag }}</span>
+  <section v-if="snippets.length" class="section section-alt">
+    <div class="container">
+      <h2 class="section-title">代码片段</h2>
+      <p class="section-sub">踩坑后的沉淀，调试路上常用的代码</p>
+      <div class="snippets">
+        <div v-for="snippet in snippets" :key="snippet.id" class="snippet card">
+          <div class="sn-head">
+            <h3>{{ snippet.title }}</h3>
+            <span class="lang">{{ snippet.language }}</span>
+          </div>
+          <p v-if="snippet.description" class="sn-desc">{{ snippet.description }}</p>
+          <pre><code>{{ snippet.code }}</code></pre>
+          <div v-if="snippet.tags?.length" class="sn-tags">
+            <span v-for="tag in snippet.tags" :key="tag" class="sn-tag">{{ tag }}</span>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <style scoped>
+.section {
+  padding: 64px 0;
+}
+
+.section-alt {
+  background: #f1efe9;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
 .snippets {
   display: flex;
   flex-direction: column;

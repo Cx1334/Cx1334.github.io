@@ -3,6 +3,7 @@ import { computed } from 'vue';
 import profileData from '../content/profile.json';
 import projectsData from '../content/projects.json';
 import ProjectCard from './components/ProjectCard.vue';
+import NotesSection from './components/NotesSection.vue';
 import SnippetsSection from './components/SnippetsSection.vue';
 import ToolsSection from './components/ToolsSection.vue';
 
@@ -72,15 +73,11 @@ const featuredProjects = computed(() => {
         </div>
       </section>
 
-      <section class="section section-alt">
-        <div class="container">
-          <h2 class="section-title">代码片段</h2>
-          <p class="section-sub">踩坑后的沉淀，调试路上常用的代码</p>
-          <SnippetsSection />
-        </div>
-      </section>
+      <SnippetsSection />
 
-      <section v-if="profile.resources?.length" class="section">
+      <NotesSection />
+
+      <section v-if="profile.resources?.length" class="section section-alt">
         <div class="container">
           <h2 class="section-title">嵌入式资源导航</h2>
           <p class="section-sub">平时用得顺手的芯片资料、内核源码与选型工具</p>
@@ -101,7 +98,7 @@ const featuredProjects = computed(() => {
         </div>
       </section>
 
-      <section class="section section-alt">
+      <section class="section">
         <div class="container">
           <h2 class="section-title">实用工具</h2>
           <p class="section-sub">嵌入式开发常用计算与转换，随时可用</p>
