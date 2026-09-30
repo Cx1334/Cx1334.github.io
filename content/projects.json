@@ -1,0 +1,24 @@
+{
+  "projects": [
+    {
+      "id": "db-1",
+      "name": "RK3588 边缘计算网关",
+      "tagline": "双网口 + 4G/WiFi 冗余通信，本地采集 Modbus/CAN 设备数据，边缘预处理后 MQTT 上云",
+      "description": "基于 RK3588 的工业边缘计算网关：双网口 + 4G/WiFi 冗余通信，本地采集 Modbus/CAN 设备数据，在边缘侧完成协议转换与数据预处理后经 MQTT 上报云端，支持差分包 OTA 与远程运维。",
+      "role": "嵌入式软件负责人：BSP 移植、驱动调试、通信框架与 OTA 方案",
+      "techStack": ["C", "Linux", "RK3588", "U-Boot", "Device Tree", "Modbus", "CAN", "MQTT"],
+      "highlights": [
+        "完成 RK3588 BSP 移植与内核裁剪，启动时间优化 35%",
+        "BSP 移植（2026-08-20）",
+        "驱动调试（2026-09-05）",
+        "网关框架、差分包 OTA 进行中"
+      ],
+      "period": "2026-08 至今",
+      "images": [],
+      "links": [],
+      "problem": "工业现场网络条件差、协议多样（Modbus/CAN），设备数据难以上云、升级容易失败",
+      "result": "双网口 + 4G 冗余链路保证在线率；BSP 启动时间优化 35%；差分包 OTA 双分区回滚，弱网升级不掉线",
+      "status": "active"
+    }
+  ]
+}

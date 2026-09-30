@@ -1,0 +1,67 @@
+{
+  "name": "小冯",
+  "eyebrow": "Embedded Engineer · 嵌入式工程师",
+  "headline": "把设备做稳、把链路打通、把现场问题定位到根因",
+  "intro": "专注嵌入式软件开发：从 BSP 移植、驱动调试到工业通信与边缘计算。经手过工业网关、通信协议栈与终端产品，习惯用「稳定性、可维护性、可复现」三把尺子衡量交付。",
+  "facts": ["嵌入式 Linux", "工业通信 CAN / Modbus", "边缘计算"],
+  "featured": ["db-1"],
+  "skills": [
+    { "title": "语言", "items": ["C", "C++", "Shell", "Python（脚本）"] },
+    { "title": "嵌入式", "items": ["嵌入式 Linux", "BSP / 设备树", "U-Boot", "驱动调试", "RTOS"] },
+    { "title": "通信", "items": ["CAN", "Modbus", "MQTT", "UART / SPI / I2C", "TCP/IP"] },
+    { "title": "工具", "items": ["Git", "示波器 / 逻辑分析仪", "交叉编译工具链", "Make / CMake"] }
+  ],
+  "resources": [
+    {
+      "title": "STMicroelectronics",
+      "url": "https://www.st.com",
+      "description": "意法半导体官方网站，STM32 芯片资料、参考手册和 HAL 库下载。",
+      "category": "嵌入式 / MCU"
+    },
+    {
+      "title": "Linux Kernel Archives",
+      "url": "https://www.kernel.org",
+      "description": "Linux 内核源代码主要分发站点，嵌入式 Linux 开发必备。",
+      "category": "Linux / 驱动"
+    },
+    {
+      "title": "DigiKey",
+      "url": "https://www.digikey.com",
+      "description": "全球最大的电子元件分销商之一，选型和查找数据手册的利器。",
+      "category": "硬件 / PCB"
+    },
+    {
+      "title": "STM32F103x8 Datasheet",
+      "url": "https://www.st.com/resource/en/datasheet/stm32f103c8.pdf",
+      "description": "STM32F103x8 官方数据手册，包含电气特性和引脚定义。",
+      "category": "嵌入式 / MCU"
+    },
+    {
+      "title": "VESC BLDC 电机控制源码",
+      "url": "https://github.com/vedderb/bldc",
+      "description": "开源无刷电机控制算法源码（FOC），学习电机控制的优质参考。",
+      "category": "教程 / 源码"
+    }
+  ],
+  "learning": [
+    { "title": "方向", "body": "持续深耕嵌入式 Linux 与工业通信，关注系统稳定性与可维护性" },
+    { "title": "在学", "body": "边缘计算部署、系统性能分析、Rust 在嵌入式的应用探索" },
+    { "title": "输出", "body": "把调试与踩坑经验整理成可复用的开发工具与文档" }
+  ],
+  "quotes": [
+    { "content": "Talk is cheap. Show me the code.", "author": "Linus Torvalds" },
+    { "content": "Simplicity is prerequisite for reliability.", "author": "Edsger W. Dijkstra" },
+    { "content": "调试代码比写代码难两倍。因此，如果你写出了最聪明的代码，你就没有足够的能力去调试它。", "author": "Brian Kernighan" }
+  ],
+  "contact": [
+    { "label": "邮箱", "value": "", "href": "" },
+    { "label": "GitHub", "value": "github.com/cx1334", "href": "https://github.com/cx1334" },
+    { "label": "微信", "value": "", "href": "" }
+  ],
+  "site": {
+    "title": "小冯 · 嵌入式工程师",
+    "description": "小冯的个人主页：嵌入式工程师，专注嵌入式 Linux、工业通信与边缘计算方向的产品研发。",
+    "ogImage": "og-cover.png",
+    "baseUrl": "https://cx1334.github.io/"
+  }
+}
