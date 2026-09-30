@@ -1,0 +1,12 @@
+{
+  "snippets": [
+    {
+      "id": "s1",
+      "title": "STM32 HAL UART 重定向 printf",
+      "language": "c",
+      "description": "在 Keil/IAR 中使用 printf 输出到串口，调试利器",
+      "tags": ["STM32", "UART", "Debug"],
+      "code": "#include \"stdio.h\"\n\n// 重定向 fputc 函数\nint fputc(int ch, FILE *f) {\n    HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, 0xFFFF);\n    return ch;\n}"
+    }
+  ]
+}
