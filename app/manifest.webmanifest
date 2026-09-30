@@ -1,0 +1,17 @@
+{
+  "name": "生活工作台",
+  "short_name": "工作台",
+  "description": "personal-site 私人生活工作台",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f6f3ee",
+  "theme_color": "#2c7a6b",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

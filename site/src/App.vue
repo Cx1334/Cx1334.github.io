@@ -34,6 +34,7 @@ const featuredProjects = computed(() => {
         <div class="hero-actions">
           <a class="cta" href="#projects">查看项目作品</a>
           <a v-if="visibleContact.length" class="cta ghost" href="#contact">联系我</a>
+          <a class="cta ghost" href="/app/">我的工作台</a>
         </div>
       </div>
     </header>
